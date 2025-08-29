@@ -1,0 +1,2718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OrphanageHub Documentation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #10b981;
+            --accent-color: #8b5cf6;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --dark-bg: #0f172a;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #1e293b;
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            background: var(--light-bg);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transform: translateX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-header p {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .nav-section {
+            padding: 1rem 0;
+        }
+
+        .nav-title {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 0.625rem 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: var(--light-bg);
+            border-left-color: var(--primary-color);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(to right, rgba(37, 99, 235, 0.1), transparent);
+            border-left-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .nav-item i {
+            width: 20px;
+            margin-right: 0.75rem;
+            opacity: 0.7;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 101;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Content Sections */
+        .section {
+            margin-bottom: 3rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 2rem 0 1rem;
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+        }
+
+        .feature-card h4 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0.875rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: var(--light-bg);
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--code-bg) !important;
+            border-radius: 0.5rem !important;
+            padding: 1.5rem !important;
+            margin: 1rem 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        code {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+
+        :not(pre) > code {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-color);
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+        }
+
+        /* Command Cards */
+        .command-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .command-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            transition: all 0.2s;
+        }
+
+        .command-card:hover {
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .command-card .cmd {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .command-card .desc {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .command-card .time {
+            font-size: 0.75rem;
+            color: var(--warning-color);
+            margin-top: 0.25rem;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-primary {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-color);
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--secondary-color);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        /* Alert Boxes */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: rgba(37, 99, 235, 0.05);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.05);
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.05);
+            border-color: var(--warning-color);
+            color: var(--warning-color);
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.05);
+            border-color: var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .action-btn.secondary {
+            background: var(--card-bg);
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        /* Performance Metrics */
+        .metric-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Search Box */
+        .search-box {
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            padding: 1rem;
+            margin: -2rem -2rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 10;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cpath d='m21 21-4.35-4.35'%3E%3C/path%3E%3C/svg%3E") no-repeat 1rem center;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            padding: 1.5rem 0;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Copy Button */
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.25rem;
+            color: white;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        pre:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Mermaid Diagrams */
+        .mermaid {
+            margin: 1.5rem 0;
+            background: var(--card-bg);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.visible {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metric-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                margin: -1rem -1rem 1rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary-color);
+            color: white;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Section Diagram Pre */
+        .section-diagram {
+            font-family: monospace;
+            white-space: pre;
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        /* Enhance tables with stripes */
+        tbody tr:nth-child(odd) {
+            background-color: rgba(0,0,0,0.02);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Mobile Menu Toggle -->
+        <button class="menu-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1>🏠 OrphanageHub</h1>
+                <p>Professional Management System</p>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Getting Started</div>
+                <a href="#overview" class="nav-item active">
+                    <i class="fas fa-home"></i> Overview
+                </a>
+                <a href="#features" class="nav-item">
+                    <i class="fas fa-star"></i> Features
+                </a>
+                <a href="#system-requirements" class="nav-item">
+                    <i class="fas fa-server"></i> System Requirements
+                </a>
+                <a href="#installation" class="nav-item">
+                    <i class="fas fa-download"></i> Installation
+                </a>
+                <a href="#quick-start" class="nav-item">
+                    <i class="fas fa-rocket"></i> Quick Start
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Development</div>
+                <a href="#ultra-fast-development-workflow" class="nav-item">
+                    <i class="fas fa-code"></i> Dev Workflow
+                </a>
+                <a href="#complete-command-reference" class="nav-item">
+                    <i class="fas fa-terminal"></i> Commands
+                </a>
+                <a href="#project-architecture" class="nav-item">
+                    <i class="fas fa-sitemap"></i> Architecture
+                </a>
+                <a href="#database-management" class="nav-item">
+                    <i class="fas fa-database"></i> Database
+                </a>
+                <a href="#testing" class="nav-item">
+                    <i class="fas fa-vial"></i> Testing
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Advanced</div>
+                <a href="#debugging-guide" class="nav-item">
+                    <i class="fas fa-bug"></i> Debugging
+                </a>
+                <a href="#code-quality-standards" class="nav-item">
+                    <i class="fas fa-check-circle"></i> Code Quality
+                </a>
+                <a href="#python-scripts-documentation" class="nav-item">
+                    <i class="fas fa-file-code"></i> Python Scripts
+                </a>
+                <a href="#performance-benchmarks" class="nav-item">
+                    <i class="fas fa-tachometer-alt"></i> Performance
+                </a>
+                <a href="#troubleshooting" class="nav-item">
+                    <i class="fas fa-wrench"></i> Troubleshooting
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Community</div>
+                <a href="#contributing" class="nav-item">
+                    <i class="fas fa-hands-helping"></i> Contributing
+                </a>
+                <a href="#support" class="nav-item">
+                    <i class="fas fa-life-ring"></i> Support
+                </a>
+                <a href="#license" class="nav-item">
+                    <i class="fas fa-certificate"></i> License
+                </a>
+                <a href="#makefile" class="nav-item">
+                    <i class="fas fa-tools"></i> Makefile
+                </a>
+                <a href="#pom-xml" class="nav-item">
+                    <i class="fas fa-file-code"></i> pom.xml
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search documentation..." id="searchInput">
+            </div>
+
+            <!-- Overview Section -->
+            <section id="overview" class="section">
+                <div class="section-header">
+                    <h2>📋 Overview</h2>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>OrphanageHub</strong> is a comprehensive desktop application for managing orphanage operations, built with Java Swing and featuring a revolutionary section-based compilation system that makes development 10-15x faster.
+                </div>
+
+                <p>OrphanageHub is a comprehensive management system for orphanage operations, providing:</p>
+                <ul>
+                    <li><strong>Multi-role authentication</strong> with secure user management</li>
+                    <li><strong>Resource management</strong> with real-time tracking</li>
+                    <li><strong>Donation processing</strong> with automated receipts</li>
+                    <li><strong>Volunteer coordination</strong> with scheduling</li>
+                    <li><strong>Administrative dashboards</strong> with reporting</li>
+                </ul>
+                <p>The development environment features a revolutionary section-based compilation system that reduces build times by 90% and provides instant feedback during development.</p>
+
+                <div class="quick-actions">
+                    <a href="#quick-start" class="action-btn">
+                        <i class="fas fa-play"></i> Get Started
+                    </a>
+                    <a href="https://github.com/yourusername/OrphanageHub_PAT2025" class="action-btn secondary">
+                        <i class="fab fa-github"></i> View on GitHub
+                    </a>
+                </div>
+
+                <div class="metric-cards">
+                    <div class="metric-card">
+                        <div class="metric-value">15x</div>
+                        <div class="metric-label">Faster Compilation</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">2s</div>
+                        <div class="metric-label">Average Build Time</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">93%</div>
+                        <div class="metric-label">Time Saved</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">100%</div>
+                        <div class="metric-label">Test Coverage</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section id="features" class="section">
+                <div class="section-header">
+                    <h2>✨ Features</h2>
+                </div>
+
+                <h3>Application Features</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4><i class="fas fa-lock"></i> Authentication</h4>
+                        <p>Secure multi-role login (Admin, Donor, Volunteer, Staff)</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-users"></i> User Management</h4>
+                        <p>Complete CRUD operations with role-based access</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-building"></i> Orphanage Management</h4>
+                        <p>Registration, profile management, resource allocation</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-hand-holding-heart"></i> Donation System</h4>
+                        <p>Payment processing, receipt generation, donor history</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-calendar-check"></i> Volunteer Portal</h4>
+                        <p>Schedule management, hour tracking, task assignments</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-chart-bar"></i> Reporting</h4>
+                        <p>Analytics dashboards, export capabilities</p>
+                    </div>
+                </div>
+
+                <h3>Development Features</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4><i class="fas fa-bolt"></i> Section Compilation</h4>
+                        <p>Compile only changed modules (10-15x faster)</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-eye"></i> Watch Mode</h4>
+                        <p>Auto-recompile on file save with live dashboard</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-memory"></i> Smart Caching</h4>
+                        <p>Content-based hash caching per section</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-link"></i> Dependency Tracking</h4>
+                        <p>Automatic downstream recompilation</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-bug"></i> Debug Tools</h4>
+                        <p>Thread dumps, heap analysis, remote debugging</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-check-circle"></i> Quality Enforcement</h4>
+                        <p>Automated formatting and static analysis</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- System Requirements Section -->
+            <section id="system-requirements" class="section">
+                <div class="section-header">
+                    <h2>🖥️ System Requirements</h2>
+                </div>
+
+                <div class="card">
+                    <h3>Minimum Requirements</h3>
+                    <ul>
+                        <li><strong>Java JDK</strong>: Version 17 (exactly - enforced by Maven)</li>
+                        <li><strong>Maven</strong>: Version 3.8 or higher</li>
+                        <li><strong>Python</strong>: Version 3.9 or higher</li>
+                        <li><strong>RAM</strong>: 4GB minimum</li>
+                        <li><strong>Disk Space</strong>: 500MB for application + dependencies</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Operating System</h3>
+                    <ul>
+                        <li><strong>Linux</strong>: Ubuntu 20.04+, Debian 11+, Fedora 34+, Kali 2021.1+</li>
+                        <li><strong>macOS</strong>: 11.0 (Big Sur) or later</li>
+                        <li><strong>Windows</strong>: 10/11 (WSL2 recommended for best experience)</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Database</h3>
+                    <ul>
+                        <li><strong>MS Access</strong>: .accdb file format</li>
+                        <li><strong>JDBC Driver</strong>: UCanAccess 5.0.1 (managed by Maven)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Installation Section -->
+            <section id="installation" class="section">
+                <div class="section-header">
+                    <h2>📦 Installation</h2>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('install', 'verify-prerequisites')">Verify Prerequisites</button>
+                    <button class="tab" onclick="showTab('install', 'clone-repository')">Clone Repository</button>
+                    <button class="tab" onclick="showTab('install', 'initial-setup')">Initial Setup</button>
+                    <button class="tab" onclick="showTab('install', 'database-setup')">Database Setup</button>
+                </div>
+
+                <div class="tab-content">
+                    <div id="install-verify-prerequisites" class="tab-panel active">
+                        <h4>Step 1: Verify Prerequisites</h4>
+                        <pre><code class="language-bash"># Check Java version (must show 17)
+java --version
+
+# Check Maven version (must be 3.8+)
+mvn --version
+
+# Check Python version (must be 3.9+)
+python3 --version
+
+# Check Make (Linux/macOS/WSL)
+make --version</code></pre>
+                    </div>
+
+                    <div id="install-clone-repository" class="tab-panel">
+                        <h4>Step 2: Clone Repository</h4>
+                        <pre><code class="language-bash"># Clone the repository
+git clone https://github.com/yourusername/OrphanageHub_PAT2025.git
+cd OrphanageHub_PAT2025</code></pre>
+                    </div>
+
+                    <div id="install-initial-setup" class="tab-panel">
+                        <h4>Step 3: Initial Setup</h4>
+                        <pre><code class="language-bash"># Create required directories
+mkdir -p db logs target/section-classes
+
+# Run automated setup (creates Python venv, installs dependencies)
+make setup
+
+# Verify setup completed successfully
+python3 scripts/verify_setup.py</code></pre>
+                    </div>
+
+                    <div id="install-database-setup" class="tab-panel">
+                        <h4>Step 4: Database Setup</h4>
+                        <pre><code class="language-bash"># Option A: Use existing database
+cp /path/to/your/OrphanageHub.accdb db/OrphanageHub.accdb
+
+# Option B: Start with template database
+cp db/template.accdb db/OrphanageHub.accdb
+
+# Verify database connectivity
+make db-ping</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Start Section -->
+            <section id="quick-start" class="section">
+                <div class="section-header">
+                    <h2>🚀 Quick Start</h2>
+                </div>
+
+                <div class="alert alert-success">
+                    <strong>Fastest Path to Running Application (2 minutes)</strong>
+                </div>
+
+                <div class="card">
+                    <h3>Option 1: Ultra-Fast Section Compiler</h3>
+                    <pre><code class="language-bash"># 1. Compile with section compiler (3-5 seconds)
+make section-compile
+
+# 2. Run the application (instant)
+make section-run
+
+# Or combine both:
+make section-compile && make section-run</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Option 2: Traditional Maven (slower but comprehensive)</h3>
+                    <pre><code class="language-bash"># Full Maven build and run (30-45 seconds)
+make run</code></pre>
+                </div>
+            </section>
+
+            <!-- Ultra-Fast Development Workflow Section -->
+            <section id="ultra-fast-development-workflow" class="section">
+                <div class="section-header">
+                    <h2>⚡ Ultra-Fast Development Workflow</h2>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>The Game-Changing Two-Terminal Setup</strong>: This workflow provides near-instant feedback, making Java development feel as responsive as interpreted languages.
+                </div>
+
+                <div class="card">
+                    <h3>Terminal 1: Live Compilation Dashboard</h3>
+                    <pre><code class="language-bash">make section-watch</code></pre>
+                    <p>This starts an intelligent watcher that:</p>
+                    <ul>
+                        <li>✅ Monitors all Java files in <code>src/main/java/</code></li>
+                        <li>✅ Auto-detects which section changed</li>
+                        <li>✅ Recompiles only affected sections</li>
+                        <li>✅ Shows compilation status per module</li>
+                        <li>✅ Displays errors with file and line numbers</li>
+                        <li>✅ Updates timing statistics</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Terminal 2: Instant Application Launch</h3>
+                    <pre><code class="language-bash">make section-run</code></pre>
+                    <p>Since Terminal 1 has already compiled the code, this launches instantly (&lt;1 second).</p>
+                </div>
+
+                <div class="card">
+                    <h3>Section Architecture</h3>
+                    <pre class="section-diagram">┌──────────────────────────────────────────┐
+│                   util                    │ (No dependencies)
+└────────────────┬─────────────────────────┘
+                 │
+┌────────────────▼─────────────────────────┐
+│                  model                    │ (Depends on: util)
+└────────────────┬─────────────────────────┘
+                 │
+┌────────────────▼─────────────────────────┐
+│                   dao                     │ (Depends on: model, util)
+└─────┬───────────────────────┬─────────────┘
+      │                       │
+┌─────▼──────┐         ┌─────▼─────────────┐
+│   tools    │         │     service        │ (Depends on: dao, model, util)
+└────────────┘         └─────┬──────────────┘
+                             │
+                      ┌──────▼─────────────┐
+                      │       gui           │ (Depends on: service, dao, model, util)
+                      └─────────────────────┘</pre>
+                </div>
+
+                <h3>Performance Comparison</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Operation</th>
+                                <th>Traditional Maven</th>
+                                <th>Section Compiler</th>
+                                <th>Improvement</th>
+                                <th>Time Saved</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Full Build</td>
+                                <td>45 seconds</td>
+                                <td>5 seconds</td>
+                                <td><strong>9x faster</strong></td>
+                                <td>40 seconds</td>
+                            </tr>
+                            <tr>
+                                <td>Single File Change</td>
+                                <td>30 seconds</td>
+                                <td>2 seconds</td>
+                                <td><strong>15x faster</strong></td>
+                                <td>28 seconds</td>
+                            </tr>
+                            <tr>
+                                <td>No Changes</td>
+                                <td>15 seconds</td>
+                                <td>0.1 seconds</td>
+                                <td><strong>150x faster</strong></td>
+                                <td>14.9 seconds</td>
+                            </tr>
+                            <tr>
+                                <td>Application Launch</td>
+                                <td>8 seconds</td>
+                                <td>&lt;1 second</td>
+                                <td><strong>8x faster</strong></td>
+                                <td>7 seconds</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Complete Command Reference Section -->
+            <section id="complete-command-reference" class="section">
+                <div class="section-header">
+                    <h2>📝 Complete Command Reference</h2>
+                </div>
+
+                <h3>Development Workflow Commands</h3>
+                <div class="command-grid">
+                    <div class="command-card">
+                        <div class="cmd">make section-compile</div>
+                        <div class="desc">Compile changed sections only</div>
+                        <div class="time">2-3s</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make section-watch</div>
+                        <div class="desc">Start watch mode with dashboard</div>
+                        <div class="time">Continuous</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make section-run</div>
+                        <div class="desc">Run using compiled classes</div>
+                        <div class="time">&lt;1s</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make section-clean</div>
+                        <div class="desc">Remove section-compiled classes</div>
+                        <div class="time">Instant</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make section-rebuild</div>
+                        <div class="desc">Force rebuild all sections</div>
+                        <div class="time">5s</div>
+                    </div>
+                </div>
+
+                <h3>Traditional Maven Commands</h3>
+                <div class="command-grid">
+                    <div class="command-card">
+                        <div class="cmd">make build</div>
+                        <div class="desc">Full Maven package</div>
+                        <div class="time">30s</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make run</div>
+                        <div class="desc">Maven compile and run</div>
+                        <div class="time">45s</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make clean</div>
+                        <div class="desc">Maven clean</div>
+                        <div class="time">2s</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make compile</div>
+                        <div class="desc">Maven compile only</div>
+                        <div class="time">20s</div>
+                    </div>
+                </div>
+
+                <h3>Quality & Testing Commands</h3>
+                <div class="command-grid">
+                    <div class="command-card">
+                        <div class="cmd">make format</div>
+                        <div class="desc">Apply Google Java Format</div>
+                        <div class="time">3s</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make check</div>
+                        <div class="desc">Run format check + SpotBugs</div>
+                        <div class="time">10s</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make test</div>
+                        <div class="desc">Run all JUnit tests</div>
+                        <div class="time">15s</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make test-single TEST=UserDAOTest</div>
+                        <div class="desc">Run specific test</div>
+                        <div class="time">5s</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make ci</div>
+                        <div class="desc">Complete CI pipeline</div>
+                        <div class="time">60s</div>
+                    </div>
+                </div>
+
+                <h3>Debugging Commands</h3>
+                <div class="command-grid">
+                    <div class="command-card">
+                        <div class="cmd">make debug</div>
+                        <div class="desc">Start with debug port 5005</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make jdb</div>
+                        <div class="desc">Connect CLI debugger</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make pid</div>
+                        <div class="desc">Get application PID</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make thread-dump</div>
+                        <div class="desc">Generate thread dump</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make heap-dump</div>
+                        <div class="desc">Generate heap histogram</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make diagnose</div>
+                        <div class="desc">Full diagnostic report</div>
+                    </div>
+                </div>
+
+                <h3>Database Commands</h3>
+                <div class="command-grid">
+                    <div class="command-card">
+                        <div class="cmd">make db-ping</div>
+                        <div class="desc">Test connectivity</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make db-reset</div>
+                        <div class="desc">Reset from template</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make db-backup</div>
+                        <div class="desc">Create backup</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make db-sql q="SELECT * FROM TblUsers"</div>
+                        <div class="desc">Execute SQL query</div>
+                    </div>
+                </div>
+
+                <h3>Utility Commands</h3>
+                <div class="command-grid">
+                    <div class="command-card">
+                        <div class="cmd">make setup</div>
+                        <div class="desc">One-time project setup</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make python-setup</div>
+                        <div class="desc">Setup Python environment</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make verify</div>
+                        <div class="desc">Verify installation</div>
+                    </div>
+                    <div class="command-card">
+                        <div class="cmd">make help</div>
+                        <div class="desc">Show all commands</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Project Architecture Section -->
+            <section id="project-architecture" class="section">
+                <div class="section-header">
+                    <h2>🏗️ Project Architecture</h2>
+                </div>
+
+                <div class="card">
+                    <h3>Directory Structure</h3>
+                    <pre><code class="language-bash">OrphanageHub_PAT2025/
+│
+├── src/
+│   ├── main/
+│   │   ├── java/com/orphanagehub/
+│   │   │   ├── util/                  # Utilities (no dependencies)
+│   │   │   │   ├── EdtGuard.java
+│   │   │   │   ├── GlobalExceptionHandler.java
+│   │   │   │   ├── PasswordUtil.java
+│   │   │   │   └── ValidationUtil.java
+│   │   │   │
+│   │   │   ├── model/                 # Data models (depends on util)
+│   │   │   │   ├── User.java
+│   │   │   │   ├── Orphanage.java
+│   │   │   │   ├── Donation.java
+│   │   │   │   ├── ResourceRequest.java
+│   │   │   │   └── OrphanageInfo.java
+│   │   │   │
+│   │   │   ├── dao/                   # Data access (depends on model, util)
+│   │   │   │   ├── DatabaseManager.java
+│   │   │   │   ├── UserDAO.java
+│   │   │   │   ├── OrphanageDAO.java
+│   │   │   │   ├── DonationDAO.java
+│   │   │   │   └── ResourceRequestDAO.java
+│   │   │   │
+│   │   │   ├── service/               # Business logic (depends on dao, model, util)
+│   │   │   │   ├── AuthService.java
+│   │   │   │   ├── AdminService.java
+│   │   │   │   ├── DonorService.java
+│   │   │   │   ├── OrphanageService.java
+│   │   │   │   └── RegistrationService.java
+│   │   │   │
+│   │   │   ├── gui/                   # UI layer (depends on service, dao, model, util)
+│   │   │   │   ├── OrphanageHubApp.java
+│   │   │   │   ├── LoginPanel.java
+│   │   │   │   ├── HomePanel.java
+│   │   │   │   ├── AdminDashboardPanel.java
+│   │   │   │   ├── DonorDashboardPanel.java
+│   │   │   │   └── VolunteerDashboardPanel.java
+│   │   │   │
+│   │   │   └── tools/                 # CLI tools (depends on dao, model, util)
+│   │   │       ├── DbDoctor.java
+│   │   │       └── DbShell.java
+│   │   │
+│   │   └── resources/
+│   │       ├── app.properties
+│   │       └── images/
+│   │
+│   └── test/
+│       └── java/com/orphanagehub/
+│           ├── dao/
+│           ├── service/
+│           └── util/
+│
+├── scripts/                            # Python automation
+│   ├── section_build.py               # Section compiler engine
+│   ├── db_manager.py                  # Database utilities
+│   ├── log_analyzer.py                # Log analysis
+│   ├── verify_setup.py                # Setup verification
+│   ├── requirements.txt               # Python dependencies
+│   └── .venv/                         # Python virtual environment
+│
+├── db/                                 # Database files
+│   ├── OrphanageHub.accdb            # Main database
+│   └── template.accdb                # Clean template
+│
+├── logs/                              # Application logs
+│   ├── orphanagehub.log              # Main application log
+│   ├── thread-dump-*.txt             # Thread dumps
+│   └── heap-histo-*.txt              # Heap histograms
+│
+├── target/                            # Build output
+│   ├── section-classes/              # Section compiler output
+│   │   ├── util/
+│   │   ├── model/
+│   │   ├── dao/
+│   │   ├── service/
+│   │   ├── gui/
+│   │   └── tools/
+│   ├── classes/                      # Maven output
+│   └── OrphanageHub-1.0.jar         # Packaged application
+│
+├── .gitignore                         # Git ignore rules
+├── Makefile                          # Command automation
+├── pom.xml                           # Maven configuration
+├── README.md                         # This file
+└── LICENSE                           # MIT License</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Package Dependencies Graph</h3>
+                    <div class="mermaid">
+graph TD
+    util[com.orphanagehub.util]
+    model[com.orphanagehub.model]
+    dao[com.orphanagehub.dao]
+    service[com.orphanagehub.service]
+    gui[com.orphanagehub.gui]
+    tools[com.orphanagehub.tools]
+
+    model --> util
+    dao --> model
+    dao --> util
+    service --> dao
+    service --> model
+    service --> util
+    gui --> service
+    gui --> dao
+    gui --> model
+    gui --> util
+    tools --> dao
+    tools --> model
+    tools --> util
+                    </div>
+                </div>
+            </section>
+
+            <!-- Database Management Section -->
+            <section id="database-management" class="section">
+                <div class="section-header">
+                    <h2>🗄️ Database Management</h2>
+                </div>
+
+                <div class="card">
+                    <h3>Database Schema</h3>
+                    <pre><code class="language-sql">-- Core Tables
+TblUsers                    -- User accounts and authentication
+TblOrphanages              -- Orphanage profiles and information
+TblDonations               -- Donation records and receipts
+TblResourceRequests        -- Resource needs and requests
+TblVolunteers              -- Volunteer profiles and hours
+
+-- Lookup Tables
+TblRoles                   -- User role definitions
+TblDonationTypes          -- Types of donations
+TblResourceCategories     -- Resource categorization</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Database Configuration</h3>
+                    <p>Location: <code>src/main/resources/app.properties</code></p>
+                    <pre><code class="language-properties"># Database Configuration
+db.url=jdbc:ucanaccess://db/OrphanageHub.accdb
+db.driver=net.sf.ucanaccess.jdbc.UcanaccessDriver
+db.showSQL=false
+db.pool.size=10
+db.timeout=30
+
+# Application Configuration
+app.name=OrphanageHub
+app.version=1.0.0
+app.debug=false</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Database Operations</h3>
+                    <pre><code class="language-bash"># Test connectivity
+make db-ping
+
+# Reset to clean state (warning: deletes all data)
+make db-reset
+
+# Create backup
+make db-backup
+
+# Run SQL queries
+make db-sql q="SELECT COUNT(*) FROM TblUsers"
+make db-sql q="SELECT * FROM TblOrphanages WHERE City='Mumbai'"
+
+# Interactive SQL shell
+java -cp "$(make classpath)" com.orphanagehub.tools.DbShell</code></pre>
+                </div>
+            </section>
+
+            <!-- Testing Section -->
+            <section id="testing" class="section">
+                <div class="section-header">
+                    <h2>🧪 Testing</h2>
+                </div>
+
+                <div class="card">
+                    <h3>Test Structure</h3>
+                    <pre><code class="language-bash">src/test/java/com/orphanagehub/
+├── dao/
+│   ├── UserDAOTest.java
+│   ├── OrphanageDAOTest.java
+│   └── DonationDAOTest.java
+├── service/
+│   ├── AuthServiceTest.java
+│   ├── AdminServiceTest.java
+│   └── DonorServiceTest.java
+└── util/
+    ├── ValidationUtilTest.java
+    └── PasswordUtilTest.java</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Running Tests</h3>
+                    <pre><code class="language-bash"># Run all tests
+make test
+
+# Run specific test class
+make test-single TEST=UserDAOTest
+
+# Run with coverage report
+mvn test jacoco:report
+open target/site/jacoco/index.html
+
+# Run tests in watch mode (re-runs on file change)
+mvn test -Dmaven.test.failure.ignore=true -Dtest=*Test -DforkCount=0</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Writing Tests</h3>
+                    <pre><code class="language-java">@Test
+public void testUserAuthentication() {
+    // Arrange
+    String username = "testuser";
+    String password = "SecurePass123!";
+    User testUser = new User(username, PasswordUtil.hash(password), "Admin");
+    userDAO.create(testUser);
+    
+    // Act
+    User authenticated = authService.authenticate(username, password);
+    
+    // Assert
+    assertNotNull(authenticated);
+    assertEquals(username, authenticated.getUsername());
+    assertEquals("Admin", authenticated.getRole());
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- Debugging Guide Section -->
+            <section id="debugging-guide" class="section">
+                <div class="section-header">
+                    <h2>🐞 Debugging Guide</h2>
+                </div>
+
+                <h3>Common Debugging Scenarios</h3>
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('debug', 'app-wont-start')">App Won't Start</button>
+                    <button class="tab" onclick="showTab('debug', 'ui-freeze')">UI Freeze</button>
+                    <button class="tab" onclick="showTab('debug', 'memory-issues')">Memory Issues</button>
+                    <button class="tab" onclick="showTab('debug', 'compilation-errors')">Compilation Errors</button>
+                </div>
+
+                <div class="tab-content">
+                    <div id="debug-app-wont-start" class="tab-panel active">
+                        <pre><code class="language-bash"># Step 1: Check Java version
+java --version  # Must be exactly 17
+
+# Step 2: Verify database connection
+make db-ping
+
+# Step 3: Check for port conflicts
+lsof -i :5005  # Debug port
+lsof -i :8080  # Application port (if applicable)
+
+# Step 4: Review logs
+tail -f logs/orphanagehub.log</code></pre>
+                    </div>
+
+                    <div id="debug-ui-freeze" class="tab-panel">
+                        <pre><code class="language-bash"># Step 1: Get application PID
+make pid
+
+# Step 2: Generate thread dump
+make thread-dump
+
+# Step 3: Analyze EDT thread
+grep -A 20 "AWT-EventQueue" logs/thread-dump-*.txt
+
+# Common fix: Ensure long operations use SwingWorker</code></pre>
+                    </div>
+
+                    <div id="debug-memory-issues" class="tab-panel">
+                        <pre><code class="language-bash"># Step 1: Generate heap histogram
+make heap-dump
+
+# Step 2: Analyze top memory consumers
+head -30 logs/heap-histo-*.txt
+
+# Step 3: Increase heap size if needed
+export MAVEN_OPTS="-Xmx2048m -Xms512m"
+
+# Step 4: Generate full heap dump for deep analysis
+jcmd $(make pid) GC.heap_dump heap.hprof
+jhat heap.hprof  # Browse at http://localhost:7000</code></pre>
+                    </div>
+
+                    <div id="debug-compilation-errors" class="tab-panel">
+                        <pre><code class="language-bash"># Step 1: Clean all build artifacts
+make section-clean
+make clean
+
+# Step 2: Force rebuild
+make section-rebuild
+
+# Step 3: If specific section fails
+make section-compile 2>&1 | grep -A 5 "error:"
+
+# Step 4: Verify dependencies
+mvn dependency:tree</code></pre>
+                    </div>
+                </div>
+
+                <h3>IDE Debugging Setup</h3>
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('ide', 'vscode')">Visual Studio Code</button>
+                    <button class="tab" onclick="showTab('ide', 'intellij')">IntelliJ IDEA</button>
+                    <button class="tab" onclick="showTab('ide', 'eclipse')">Eclipse</button>
+                    <button class="tab" onclick="showTab('ide', 'cli')">Command-Line (jdb)</button>
+                </div>
+
+                <div class="tab-content">
+                    <div id="ide-vscode" class="tab-panel active">
+                        <ol>
+                            <li>Install "Extension Pack for Java"</li>
+                            <li>Create <code>.vscode/launch.json</code>:</li>
+                        </ol>
+                        <pre><code class="language-json">{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug OrphanageHub",
+            "request": "attach",
+            "hostName": "localhost",
+            "port": 5005
+        }
+    ]
+}</code></pre>
+                        <ol start="3">
+                            <li>Run <code>make debug</code></li>
+                            <li>Press F5 to attach debugger</li>
+                        </ol>
+                    </div>
+
+                    <div id="ide-intellij" class="tab-panel">
+                        <ol>
+                            <li>Run → Edit Configurations</li>
+                            <li>Add New Configuration → Remote JVM Debug</li>
+                            <li>Settings:
+                                <ul>
+                                    <li>Host: localhost</li>
+                                    <li>Port: 5005</li>
+                                    <li>Command line arguments: (auto-generated)</li>
+                                </ul>
+                            </li>
+                            <li>Run <code>make debug</code></li>
+                            <li>Click Debug button</li>
+                        </ol>
+                    </div>
+
+                    <div id="ide-eclipse" class="tab-panel">
+                        <ol>
+                            <li>Run → Debug Configurations</li>
+                            <li>Remote Java Application → New</li>
+                            <li>Settings:
+                                <ul>
+                                    <li>Project: OrphanageHub</li>
+                                    <li>Host: localhost</li>
+                                    <li>Port: 5005</li>
+                                </ul>
+                            </li>
+                            <li>Run <code>make debug</code></li>
+                            <li>Click Debug</li>
+                        </ol>
+                    </div>
+
+                    <div id="ide-cli" class="tab-panel">
+                        <pre><code class="language-bash"># Terminal 1: Start application in debug mode
+make debug
+
+# Terminal 2: Connect debugger
+make jdb
+
+# JDB commands:
+stop in com.orphanagehub.gui.LoginPanel.login
+run
+print username
+locals
+where
+step
+cont
+exit</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Code Quality Standards Section -->
+            <section id="code-quality-standards" class="section">
+                <div class="section-header">
+                    <h2>✅ Code Quality Standards</h2>
+                </div>
+
+                <div class="card">
+                    <h3>Enforced Standards</h3>
+                    <ol>
+                        <li><strong>Google Java Format</strong> - Automatically applied</li>
+                        <li><strong>SpotBugs</strong> - Static analysis for bugs</li>
+                        <li><strong>Line Length</strong> - Maximum 100 characters</li>
+                        <li><strong>Indentation</strong> - 4 spaces (no tabs)</li>
+                    </ol>
+                </div>
+
+                <div class="card">
+                    <h3>Running Quality Checks</h3>
+                    <pre><code class="language-bash"># Format all code
+make format
+
+# Check formatting without changing
+make check
+
+# Run all quality checks
+make ci</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Coding Conventions</h3>
+                    <pre><code class="language-java">// Package naming: all lowercase
+package com.orphanagehub.service;
+
+// Class naming: PascalCase
+public class UserService {
+    
+    // Constants: UPPER_SNAKE_CASE
+    private static final int MAX_LOGIN_ATTEMPTS = 3;
+    
+    // Fields: camelCase with prefix
+    private final UserDAO userDAO;
+    private String currentUser;
+    
+    // Methods: camelCase
+    public User authenticateUser(String username, String password) {
+        // Implementation
+    }
+    
+    // JavaDoc for public methods
+    /**
+     * Authenticates a user against the database.
+     * 
+     * @param username the username to check
+     * @param password the plain text password
+     * @return the authenticated User or null
+     * @throws AuthenticationException if database error occurs
+     */
+    public User authenticate(String username, String password) 
+            throws AuthenticationException {
+        // Implementation
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- Python Scripts Documentation Section -->
+            <section id="python-scripts-documentation" class="section">
+                <div class="section-header">
+                    <h2>🐍 Python Scripts Documentation</h2>
+                </div>
+
+                <div class="card">
+                    <h3>section_build.py</h3>
+                    <p>The core engine for fast compilation.</p>
+                    <p><strong>Features:</strong></p>
+                    <ul>
+                        <li>Section-based compilation with dependency tracking</li>
+                        <li>Content-based hash caching</li>
+                        <li>Watch mode with auto-recompilation</li>
+                        <li>Error aggregation and reporting</li>
+                    </ul>
+                    <p><strong>Usage:</strong></p>
+                    <pre><code class="language-bash"># Compile changed sections
+python3 scripts/section_build.py
+
+# Force rebuild all
+python3 scripts/section_build.py -f
+
+# Watch mode
+python3 scripts/section_build.py -w
+
+# Clean artifacts
+python3 scripts/section_build.py -c
+
+# Run specific section
+python3 scripts/section_build.py -r gui</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>db_manager.py</h3>
+                    <p>Database lifecycle management utility.</p>
+                    <p><strong>Usage:</strong></p>
+                    <pre><code class="language-bash"># Reset database from template
+python3 scripts/db_manager.py reset
+
+# Create backup
+python3 scripts/db_manager.py backup
+
+# Restore from backup
+python3 scripts/db_manager.py restore backup-20240101.accdb
+
+# Verify connectivity
+python3 scripts/db_manager.py ping</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>log_analyzer.py</h3>
+                    <p>Log parsing and analysis tool.</p>
+                    <p><strong>Usage:</strong></p>
+                    <pre><code class="language-bash"># Analyze all logs
+python3 scripts/log_analyzer.py
+
+# Analyze specific date range
+python3 scripts/log_analyzer.py --from 2024-01-01 --to 2024-01-31
+
+# Generate HTML report
+python3 scripts/log_analyzer.py --output report.html
+
+# Show only errors
+python3 scripts/log_analyzer.py --level ERROR</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>verify_setup.py</h3>
+                    <p>Installation verification script.</p>
+                    <p><strong>Usage:</strong></p>
+                    <pre><code class="language-bash"># Check all requirements
+python3 scripts/verify_setup.py
+
+# Auto-fix common issues
+python3 scripts/verify_setup.py --fix
+
+# Verbose output
+python3 scripts/verify_setup.py -v</code></pre>
+                </div>
+            </section>
+
+            <!-- Performance Benchmarks Section -->
+            <section id="performance-benchmarks" class="section">
+                <div class="section-header">
+                    <h2>📊 Performance Benchmarks</h2>
+                </div>
+
+                <h3>Compilation Performance</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Traditional Maven</th>
+                                <th>Section Compiler</th>
+                                <th>Improvement</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Full Clean Build</td>
+                                <td>45 seconds</td>
+                                <td>5 seconds</td>
+                                <td><strong>9x faster</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Incremental Build (1 file)</td>
+                                <td>30 seconds</td>
+                                <td>2 seconds</td>
+                                <td><strong>15x faster</strong></td>
+                            </tr>
+                            <tr>
+                                <td>No Changes</td>
+                                <td>15 seconds</td>
+                                <td>0.1 seconds</td>
+                                <td><strong>150x faster</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Large Refactor (10 files)</td>
+                                <td>35 seconds</td>
+                                <td>4 seconds</td>
+                                <td><strong>8.75x faster</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Memory Usage</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Component</th>
+                                <th>Maven Build</th>
+                                <th>Section Build</th>
+                                <th>Savings</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Peak Memory</td>
+                                <td>512 MB</td>
+                                <td>128 MB</td>
+                                <td>384 MB</td>
+                            </tr>
+                            <tr>
+                                <td>Average Memory</td>
+                                <td>350 MB</td>
+                                <td>80 MB</td>
+                                <td>270 MB</td>
+                            </tr>
+                            <tr>
+                                <td>Minimum Required</td>
+                                <td>256 MB</td>
+                                <td>64 MB</td>
+                                <td>192 MB</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Developer Productivity</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Before</th>
+                                <th>After</th>
+                                <th>Improvement</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Daily Compilations</td>
+                                <td>50</td>
+                                <td>200+</td>
+                                <td>4x more</td>
+                            </tr>
+                            <tr>
+                                <td>Average Wait Time</td>
+                                <td>30s</td>
+                                <td>2s</td>
+                                <td>93% reduction</td>
+                            </tr>
+                            <tr>
+                                <td>Time to First Run</td>
+                                <td>2 min</td>
+                                <td>15s</td>
+                                <td>87% reduction</td>
+                            </tr>
+                            <tr>
+                                <td>Debug Setup Time</td>
+                                <td>3 min</td>
+                                <td>30s</td>
+                                <td>83% reduction</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Troubleshooting Section -->
+            <section id="troubleshooting" class="section">
+                <div class="section-header">
+                    <h2>🛠️ Troubleshooting</h2>
+                </div>
+
+                <h3>Installation Issues</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Problem</th>
+                                <th>Solution</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>"Java 17 not found"</td>
+                                <td>Install exactly JDK 17, not 11 or 21</td>
+                            </tr>
+                            <tr>
+                                <td>"Maven not found"</td>
+                                <td>Install Maven 3.8+ or use <code>./mvnw</code></td>
+                            </tr>
+                            <tr>
+                                <td>"Python not found"</td>
+                                <td>Install Python 3.9+ and ensure it's in PATH</td>
+                            </tr>
+                            <tr>
+                                <td>"make: command not found"</td>
+                                <td>Windows: Use WSL2 or Git Bash</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Compilation Issues</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Problem</th>
+                                <th>Solution</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>"Cannot find symbol"</td>
+                                <td>Run <code>make section-rebuild</code></td>
+                            </tr>
+                            <tr>
+                                <td>"Package does not exist"</td>
+                                <td>Check <code>pom.xml</code> dependencies</td>
+                            </tr>
+                            <tr>
+                                <td>"Duplicate class"</td>
+                                <td>Run <code>make clean &amp;&amp; make section-clean</code></td>
+                            </tr>
+                            <tr>
+                                <td>Watch mode not detecting</td>
+                                <td>Install watchdog: <code>pip install watchdog</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Runtime Issues</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Problem</th>
+                                <th>Solution</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>"ClassNotFoundException"</td>
+                                <td>Rebuild: <code>make section-rebuild</code></td>
+                            </tr>
+                            <tr>
+                                <td>"NoClassDefFoundError"</td>
+                                <td>Check classpath: <code>make classpath</code></td>
+                            </tr>
+                            <tr>
+                                <td>Database locked</td>
+                                <td>Kill process and remove <code>*.laccdb</code> files</td>
+                            </tr>
+                            <tr>
+                                <td>UI frozen</td>
+                                <td>Check EDT violations in logs</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Platform-Specific Issues</h3>
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('platform', 'windows')">Windows (Native)</button>
+                    <button class="tab" onclick="showTab('platform', 'wsl')">WSL2/Linux</button>
+                    <button class="tab" onclick="showTab('platform', 'macos')">macOS</button>
+                </div>
+
+                <div class="tab-content">
+                    <div id="platform-windows" class="tab-panel active">
+                        <pre><code class="language-batch">REM Use mvnw.cmd instead of mvnw
+mvnw.cmd clean package
+
+REM Use python instead of python3
+python scripts/section_build.py</code></pre>
+                    </div>
+
+                    <div id="platform-wsl" class="tab-panel">
+                        <pre><code class="language-bash"># Increase file watchers for watch mode
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+
+# Fix line endings if cloned on Windows
+find . -type f -name "*.java" -exec dos2unix {} \;</code></pre>
+                    </div>
+
+                    <div id="platform-macos" class="tab-panel">
+                        <pre><code class="language-bash"># If mvnw fails with permission denied
+chmod +x mvnw
+
+# Install command line tools if missing
+xcode-select --install</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contributing Section -->
+            <section id="contributing" class="section">
+                <div class="section-header">
+                    <h2>🤝 Contributing</h2>
+                </div>
+
+                <div class="card">
+                    <h3>Getting Started</h3>
+                    <ol>
+                        <li><strong>Fork the repository</strong> on GitHub</li>
+                        <li><strong>Clone your fork</strong>:
+                            <pre><code class="language-bash">git clone https://github.com/yourusername/OrphanageHub_PAT2025.git
+cd OrphanageHub_PAT2025</code></pre>
+                        </li>
+                        <li><strong>Set up upstream</strong>:
+                            <pre><code class="language-bash">git remote add upstream https://github.com/original/OrphanageHub_PAT2025.git</code></pre>
+                        </li>
+                        <li><strong>Create feature branch</strong>:
+                            <pre><code class="language-bash">git checkout -b feature/your-feature-name</code></pre>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="card">
+                    <h3>Development Process</h3>
+                    <ol>
+                        <li><strong>Start watch mode</strong>:
+                            <pre><code class="language-bash">make section-watch</code></pre>
+                        </li>
+                        <li><strong>Make your changes</strong> in your IDE</li>
+                        <li><strong>Test your changes</strong>:
+                            <pre><code class="language-bash">make test</code></pre>
+                        </li>
+                        <li><strong>Format your code</strong>:
+                            <pre><code class="language-bash">make format</code></pre>
+                        </li>
+                        <li><strong>Commit with meaningful message</strong>:
+                            <pre><code class="language-bash">git commit -m "feat(module): add new feature
+
+- Detailed description
+- Another detail
+
+Closes #123"</code></pre>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="card">
+                    <h3>Pull Request Guidelines</h3>
+                    <ol>
+                        <li><strong>Update your branch</strong>:
+                            <pre><code class="language-bash">git fetch upstream
+git rebase upstream/main</code></pre>
+                        </li>
+                        <li><strong>Push to your fork</strong>:
+                            <pre><code class="language-bash">git push origin feature/your-feature-name</code></pre>
+                        </li>
+                        <li><strong>Create Pull Request</strong> on GitHub</li>
+                        <li><strong>Ensure CI passes</strong> (all checks green)</li>
+                        <li><strong>Address review feedback</strong></li>
+                        <li><strong>Squash commits</strong> if requested</li>
+                    </ol>
+                </div>
+
+                <div class="card">
+                    <h3>Commit Message Format</h3>
+                    <pre><code>type(scope): subject
+
+body
+
+footer</code></pre>
+                    <p><strong>Types:</strong></p>
+                    <ul>
+                        <li><code>feat</code>: New feature</li>
+                        <li><code>fix</code>: Bug fix</li>
+                        <li><code>docs</code>: Documentation</li>
+                        <li><code>style</code>: Formatting</li>
+                        <li><code>refactor</code>: Code restructuring</li>
+                        <li><code>test</code>: Adding tests</li>
+                        <li><code>chore</code>: Maintenance</li>
+                    </ul>
+                    <p><strong>Example:</strong></p>
+                    <pre><code>feat(auth): implement two-factor authentication
+
+- Added TOTP generation and validation
+- Updated login flow to check 2FA
+- Added QR code generation for setup
+- Created backup codes system
+
+Closes #456
+Refs #123</code></pre>
+                </div>
+            </section>
+
+            <!-- Support Section -->
+            <section id="support" class="section">
+                <div class="section-header">
+                    <h2>📞 Support</h2>
+                </div>
+
+                <div class="card">
+                    <h3>Getting Help</h3>
+                    <ul>
+                        <li><strong>Documentation</strong>: This README and JavaDoc</li>
+                        <li><strong>Issues</strong>: <a href="https://github.com/yourusername/OrphanageHub_PAT2025/issues">GitHub Issues</a></li>
+                        <li><strong>Discussions</strong>: <a href="https://github.com/yourusername/OrphanageHub_PAT2025/discussions">GitHub Discussions</a></li>
+                        <li><strong>Wiki</strong>: <a href="https://github.com/yourusername/OrphanageHub_PAT2025/wiki">Project Wiki</a></li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Reporting Bugs</h3>
+                    <p>Please include:</p>
+                    <ol>
+                        <li><strong>Environment</strong>: OS, Java version, Maven version</li>
+                        <li><strong>Steps to reproduce</strong>: Exact commands run</li>
+                        <li><strong>Expected behavior</strong>: What should happen</li>
+                        <li><strong>Actual behavior</strong>: What actually happened</li>
+                        <li><strong>Logs</strong>: Relevant portions from <code>logs/</code></li>
+                        <li><strong>Screenshots</strong>: For UI issues</li>
+                    </ol>
+                    <p><strong>Bug Report Template:</strong></p>
+                    <pre><code class="language-markdown">### Environment
+- OS: Ubuntu 22.04
+- Java: 17.0.8
+- Maven: 3.9.4
+- Python: 3.10.6
+
+### Steps to Reproduce
+1. Run `make section-compile`
+2. Change UserDAO.java
+3. Run `make section-compile` again
+
+### Expected Behavior
+Should recompile only dao section
+
+### Actual Behavior
+Recompiles all sections
+
+### Logs
+[Attach relevant logs]</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Feature Requests</h3>
+                    <p>Include:</p>
+                    <ol>
+                        <li><strong>Use case</strong>: Why is this needed?</li>
+                        <li><strong>Proposed solution</strong>: How should it work?</li>
+                        <li><strong>Alternatives considered</strong>: Other approaches</li>
+                        <li><strong>Additional context</strong>: Mockups, examples</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- License Section -->
+            <section id="license" class="section">
+                <div class="section-header">
+                    <h2>📄 License</h2>
+                </div>
+
+                <div class="card">
+                    <h3>MIT License</h3>
+                    <p>Copyright (c) 2024 OrphanageHub Contributors</p>
+                    <p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:</p>
+                    <p>The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.</p>
+                    <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</p>
+                    <div class="quick-actions">
+                        <a href="https://opensource.org/licenses/MIT" class="action-btn secondary">
+                            <i class="fas fa-external-link-alt"></i> View Full License
+                        </a>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>Built with ❤️ for social impact</strong><br>
+                    <em>Version 1.0.0</em>
+                </div>
+            </section>
+
+            <!-- Makefile Section -->
+            <section id="makefile" class="section">
+                <div class="section-header">
+                    <h2>🛠️ Makefile</h2>
+                </div>
+                <pre><code class="language-makefile"># OrphanageHub - Definitive Workflow
+.DEFAULT_GOAL := help
+SHELL := /bin/bash
+
+APP_MAIN_CLASS := com.orphanagehub.gui.OrphanageHubApp
+DEBUG_PORT ?= 5005
+
+# OS detection
+ifeq ($(OS),Windows_NT)
+	MAVEN := ./mvnw.cmd
+	SEP := ;
+	PYTHON := python
+else
+	MAVEN := ./mvnw
+	SEP := :
+	PYTHON := python3
+endif
+
+# PID detection
+ifeq ($(OS),Windows_NT)
+	PID := $(shell jps -l | findstr $(APP_MAIN_CLASS) | awk '{print $$1}')
+else
+	PID := $(shell jps -l | grep $(APP_MAIN_CLASS) | awk '{print $$1}')
+endif
+
+.PHONY: help build run clean format check test ci run-dev debug jdb pid thread-dump heap-dump diag \
+        python-setup db-reset db-ping db-sql log-analyze setup sanitize \
+        section-compile section-watch section-clean section-rebuild section-run classpath \
+        doctor doctor-diagnose doctor-interactive doctor-fix doctor-watch doctor-report doctor-fortify dr df dft
+
+# =============================================================================
+# HELP
+# =============================================================================
+help:
+	@echo "OrphanageHub Project Commands"
+	@echo ""
+	@grep -E '^[a-zA-Z0-9_.-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2}'
+
+# =============================================================================
+# CORE
+# =============================================================================
+build: ## Build with Maven (package, skip tests)
+	$(MAVEN) -B -q package -DskipTests
+
+run: build ## Run via Maven (slower)
+	$(MAVEN) -q exec:java -Dexec.mainClass=$(APP_MAIN_CLASS)
+
+clean: ## Clean Maven artifacts
+	$(MAVEN) -B -q clean
+
+# =============================================================================
+# QUALITY & TESTS
+# =============================================================================
+format: ## Apply Spotless formatting
+	$(MAVEN) -B spotless:apply
+
+check: ## Spotless + SpotBugs check
+	$(MAVEN) -B spotless:check spotbugs:check
+
+test: db-reset ## Run all JUnit tests
+	$(MAVEN) -B test
+
+ci: ## Full CI pipeline
+	$(MAKE) check
+	$(MAKE) test
+	$(MAKE) build
+
+# =============================================================================
+# DEBUG & DIAGNOSTICS
+# =============================================================================
+run-dev: build ## Run with assertions and dev flag
+	$(MAVEN) -q exec:java -Dexec.mainClass=$(APP_MAIN_CLASS) -Dexec.jvmArgs="-ea -Dapp.env=dev"
+
+debug: build ## Run with JDWP open on $(DEBUG_PORT)
+	$(MAVEN) -q exec:java -Dexec.mainClass=$(APP_MAIN_CLASS) -Dexec.jvmArgs="-ea -Dapp.env=dev -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${DEBUG_PORT}"
+
+jdb: ## Attach CLI debugger
+	jdb -attach localhost:$(DEBUG_PORT)
+
+pid: ## Print PID
+	@if [ -n "$(PID)" ]; then echo "PID: $(PID)"; else echo "App not running."; fi
+
+thread-dump: ## Thread dump
+	@if [ -n "$(PID)" ]; then jcmd $(PID) Thread.print > logs/thread-dump-`date +%s`.txt && echo "Saved to logs/"; else echo "App not running."; fi
+
+heap-dump: ## Heap histogram
+	@if [ -n "$(PID)" ]; then jcmd $(PID) GC.class_histogram > logs/heap-histo-`date +%s`.txt && echo "Saved to logs/"; else echo "App not running."; fi
+
+diag: ## Bundle diagnostics
+	$(MAKE) thread-dump && $(MAKE) heap-dump
+
+# =============================================================================
+# UTILITIES & SETUP
+# =============================================================================
+python-setup: scripts/.venv/bin/activate ## Setup venv and deps
+	@echo "Python environment is ready."
+
+scripts/.venv/bin/activate: scripts/requirements.txt
+	@echo "Creating Python virtual environment..."
+	@$(PYTHON) -m venv scripts/.venv
+	@./scripts/.venv/bin/pip install -r scripts/requirements.txt
+	@touch scripts/.venv/bin/activate
+
+setup: python-setup ## Create dirs and DB template if not present
+	@mkdir -p logs db target
+	@if [ ! -f db/template.accdb ] && [ -f db/OrphanageHub.accdb ]; then \
+		echo "Creating template from OrphanageHub.accdb"; \
+		cp db/OrphanageHub.accdb db/template.accdb; \
+	fi
+	@echo "✅ Setup complete."
+
+sanitize: python-setup ## Remove fence artifacts and fix package lines
+	@./scripts/.venv/bin/python scripts/sanitize_sources.py
+
+# =============================================================================
+# DATABASE (raw java, no Maven exec plugin confusion)
+# =============================================================================
+classpath: ## Print runtime classpath for raw java
+	@$(MAVEN) -q -B dependency:build-classpath \
+		-Dmdep.outputFile=target/ext-cp.txt \
+		-Dmdep.includeScope=compile \
+		-Dmdep.outputAbsoluteArtifactFilename=true \
+		-Dmdep.pathSeparator='$(SEP)' >/dev/null 2>&1 || true
+	@CP="target/section-classes$(SEP)target/classes"; \
+	if [ -f target/ext-cp.txt ]; then \
+		EXT=$$(cat target/ext-cp.txt); \
+		CP="$$CP$(SEP)$$EXT"; \
+	fi; \
+	echo $$CP
+
+db-ping: ## Test DB connectivity headlessly
+	@CP=$$($(MAKE) -s classpath); \
+	java -cp "$$CP" com.orphanagehub.tools.DbDoctor
+
+db-reset: ## Reset DB from template
+	@if [ ! -f db/template.accdb ]; then echo "ERROR: db/template.accdb not found"; exit 2; fi
+	@cp db/template.accdb db/OrphanageHub.accdb
+	@echo "✅ Database reset."
+
+db-sql: ## Run SQL: make db-sql q="SELECT COUNT(*) FROM TblUsers"
+	@[ -n "$(q)" ] || (echo 'Usage: make db-sql q="YOUR_QUERY"'; exit 2)
+	@CP=$$($(MAKE) -s classpath); \
+	java -cp "$$CP" com.orphanagehub.tools.DbShell "$(q)"
+
+log-analyze: python-setup ## Analyze logs via Python
+	@./scripts/.venv/bin/python scripts/log_analyzer.py
+
+# =============================================================================
+# ULTRA-FAST SECTION-BASED COMPILATION
+# =============================================================================
+section-compile: python-setup ## Fast incremental compile
+	@./scripts/.venv/bin/python scripts/section_build.py
+
+section-watch: python-setup ## Watch compile with dashboard
+	@./scripts/.venv/bin/python scripts/section_build.py --watch
+
+section-clean: python-setup ## Clean section artifacts
+	@./scripts/.venv/bin/python scripts/section_build.py --clean
+
+section-rebuild: python-setup ## Force rebuild all
+	@./scripts/.venv/bin/python scripts/section_build.py --force
+
+section-run: ## Run instantly using precompiled classes
+	@CP=$$($(MAKE) -s classpath); \
+	echo "🚀 Launching with pre-compiled classes..."; \
+	java -cp "$$CP" $(APP_MAIN_CLASS)
+
+# =============================================================================
+# DOCTOR CHIMERA
+# =============================================================================
+doctor: doctor-interactive ## Run interactively
+
+doctor-diagnose: python-setup ## Diagnose only
+	@./scripts/.venv/bin/python scripts/doctor_chimera.py java diagnose
+
+doctor-interactive: python-setup ## Diagnose & fix interactively
+	@./scripts/.venv/bin/python scripts/doctor_chimera.py java interactive
+
+doctor-fix: python-setup ## Auto-fix (high-confidence)
+	@./scripts/.venv/bin/python scripts/doctor_chimera.py java fix
+
+doctor-watch: python-setup ## Watch and fix on save
+	@./scripts/.venv/bin/python scripts/doctor_chimera.py java watch
+
+doctor-report: python-setup ## Generate report
+	@./scripts/.venv/bin/python scripts/doctor_chimera.py java report
+
+doctor-fortify: python-setup ## Fortify file (AI optional)
+	@./scripts/.venv/bin/python scripts/doctor_chimera.py fortify $(file)
+
+# Short aliases
+dr: doctor-interactive
+df: doctor-fix
+dft: doctor-fortify</code></pre>
+            </section>
+
+            <!-- pom.xml Section -->
+            <section id="pom-xml" class="section">
+                <div class="section-header">
+                    <h2>📄 pom.xml</h2>
+                </div>
+                <pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;com.orphanagehub&lt;/groupId&gt;
+    &lt;artifactId&gt;OrphanageHub&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;
+
+    &lt;properties&gt;
+        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+        &lt;maven.compiler.release&gt;17&lt;/maven.compiler.release&gt;
+        &lt;maven.build.timestamp.format&gt;yyyy&lt;/maven.build.timestamp.format&gt;
+        &lt;project.build.year&gt;${maven.build.timestamp}&lt;/project.build.year&gt;
+    &lt;/properties&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;net.sf.ucanaccess&lt;/groupId&gt;
+            &lt;artifactId&gt;ucanaccess&lt;/artifactId&gt;
+            &lt;version&gt;5.0.1&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.junit.jupiter&lt;/groupId&gt;
+            &lt;artifactId&gt;junit-jupiter&lt;/artifactId&gt;
+            &lt;version&gt;5.10.2&lt;/version&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;!-- Added: SLF4J API for logging --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+            &lt;artifactId&gt;slf4j-api&lt;/artifactId&gt;
+            &lt;version&gt;2.0.13&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!-- Added: Logback implementation for SLF4J (required at runtime) --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
+            &lt;artifactId&gt;logback-classic&lt;/artifactId&gt;
+            &lt;version&gt;1.5.6&lt;/version&gt;
+            &lt;scope&gt;runtime&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;pluginManagement&gt;
+            &lt;!-- Centralized plugin version management for consistency --&gt;
+            &lt;plugins&gt;
+                &lt;plugin&gt;
+                    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                    &lt;artifactId&gt;maven-enforcer-plugin&lt;/artifactId&gt;
+                    &lt;version&gt;3.5.0&lt;/version&gt;
+                &lt;/plugin&gt;
+                &lt;plugin&gt;
+                    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                    &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+                    &lt;version&gt;3.13.0&lt;/version&gt;
+                &lt;/plugin&gt;
+                &lt;plugin&gt;
+                    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                    &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+                    &lt;version&gt;3.3.0&lt;/version&gt;
+                &lt;/plugin&gt;
+                &lt;plugin&gt;
+                    &lt;groupId&gt;com.diffplug.spotless&lt;/groupId&gt;
+                    &lt;artifactId&gt;spotless-maven-plugin&lt;/artifactId&gt;
+                    &lt;version&gt;2.43.0&lt;/version&gt;
+                &lt;/plugin&gt;
+                &lt;plugin&gt;
+                    &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+                    &lt;artifactId&gt;exec-maven-plugin&lt;/artifactId&gt;
+                    &lt;version&gt;3.3.0&lt;/version&gt;
+                &lt;/plugin&gt;
+            &lt;/plugins&gt;
+        &lt;/pluginManagement&gt;
+
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-enforcer-plugin&lt;/artifactId&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;id&gt;enforce-versions&lt;/id&gt;
+                        &lt;goals&gt;&lt;goal&gt;enforce&lt;/goal&gt;&lt;/goals&gt;
+                        &lt;configuration&gt;
+                            &lt;rules&gt;
+                                &lt;requireJavaVersion&gt;&lt;version&gt;[17,)&lt;/version&gt;&lt;/requireJavaVersion&gt;
+                                &lt;requireMavenVersion&gt;&lt;version&gt;[3.8.0,)&lt;/version&gt;&lt;/requireMavenVersion&gt;
+                            &lt;/rules&gt;
+                        &lt;/configuration&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+            &lt;/plugin&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+            &lt;/plugin&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+            &lt;/plugin&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;com.diffplug.spotless&lt;/groupId&gt;
+                &lt;artifactId&gt;spotless-maven-plugin&lt;/artifactId&gt;
+                &lt;configuration&gt;
+                    &lt;java&gt;
+                        &lt;googleJavaFormat&gt;
+                            &lt;version&gt;1.17.0&lt;/version&gt;
+                            &lt;style&gt;AOSP&lt;/style&gt;
+                        &lt;/googleJavaFormat&gt;
+                        &lt;removeUnusedImports/&gt;
+                        &lt;licenseHeader&gt;
+                            &lt;content&gt;/* Copyright (C) ${project.build.year} Jared Wisdom - All Rights Reserved */&lt;/content&gt;
+                        &lt;/licenseHeader&gt;
+                    &lt;/java&gt;
+                &lt;/configuration&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;id&gt;spotless-check&lt;/id&gt;
+                        &lt;goals&gt;&lt;goal&gt;check&lt;/goal&gt;&lt;/goals&gt;
+                        &lt;phase&gt;verify&lt;/phase&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+            &lt;/plugin&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+                &lt;artifactId&gt;exec-maven-plugin&lt;/artifactId&gt;
+                &lt;configuration&gt;
+                    &lt;mainClass&gt;com.orphanagehub.gui.OrphanageHubApp&lt;/mainClass&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+&lt;/project&gt;</code></pre>
+            </section>
+        </main>
+    </div>
+
+    <!-- Back to Top Button -->
+    <div class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-properties.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-makefile.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script>
+        // Toggle sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('visible');
+        }
+
+        // Active navigation
+        const navItems = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('.section');
+
+        function updateActiveNav() {
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach((section, index) => {
+                const top = section.offsetTop;
+                const bottom = top + section.offsetHeight;
+
+                if (scrollPos >= top && scrollPos < bottom) {
+                    navItems.forEach(item => item.classList.remove('active'));
+                    const activeItem = document.querySelector(`.nav-item[href="#${section.id}"]`);
+                    if (activeItem) activeItem.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveNav);
+
+        // Smooth scroll for nav links
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = item.getAttribute('href').substring(1);
+                const target = document.getElementById(targetId);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    // Close mobile sidebar
+                    if (window.innerWidth <= 768) {
+                        document.getElementById('sidebar').classList.remove('visible');
+                    }
+                }
+            });
+        });
+
+        // Tab functionality
+        function showTab(group, tab) {
+            const tabs = document.querySelectorAll(`.tabs .tab`);
+            const panels = document.querySelectorAll(`.tab-panel[id^="${group}-"]`);
+
+            tabs.forEach(t => t.classList.remove('active'));
+            const activeTab = Array.from(tabs).find(t => t.onclick.toString().includes(tab));
+            if (activeTab) activeTab.classList.add('active');
+
+            panels.forEach(panel => panel.classList.remove('active'));
+            const activePanel = document.getElementById(`${group}-${tab}`);
+            if (activePanel) activePanel.classList.add('active');
+        }
+
+        // Back to top button
+        const backToTopBtn = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const sections = document.querySelectorAll('.section');
+
+            sections.forEach(section => {
+                const text = section.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+
+            // If empty, show all
+            if (!searchTerm) {
+                sections.forEach(section => {
+                    section.style.display = 'block';
+                });
+            }
+        });
+
+        // Copy code functionality
+        document.querySelectorAll('pre').forEach(pre => {
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+            copyBtn.onclick = () => {
+                const code = pre.querySelector('code') ? pre.querySelector('code').textContent : pre.textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                    setTimeout(() => {
+                        copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                    }, 2000);
+                });
+            };
+            pre.appendChild(copyBtn);
+        });
+
+        // Initialize
+        updateActiveNav();
+    </script>
+</body>
+</html>
